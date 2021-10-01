@@ -102,7 +102,6 @@ let startGame = function () {
             next()
         }
     })
-    
 };
 
 
@@ -183,6 +182,7 @@ let endGame = function () {
         localStorage.setItem("highscore", JSON.stringify(newScores));
         highscore();
     })
+ 
 }
 
 clearHighscores.addEventListener("click", clearHighScores)
@@ -206,8 +206,5 @@ beginQuizButton.addEventListener("click", function () {
 homeButton.addEventListener("click", function () {
     highscoreContainer.classList.remove("main-container")
     highscoreContainer.setAttribute("class", "hide")
-
-
-    questionCounter = 0;
     startGame()
 })
