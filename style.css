@@ -4,7 +4,6 @@ body {
 
 .hide {
     display: none;
-    visibility: hidden;
 }
 
 header {
@@ -39,4 +38,10 @@ header button:hover {
 .main-container button {
     width: 50px;
     margin-top: 10px;
+}
+
+.question-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
