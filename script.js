@@ -1,11 +1,17 @@
 let body = document.querySelector("body");
 let landingPage = document.querySelector(".main-container")
+let highscoreButton = document.querySelector("button")
 let beginQuizButton = document.getElementById("begin-quiz")
 let scoreInput = document.getElementById("score-input")
 let userInitial = document.getElementById("user-initial")
 let submitScore = document.getElementById("submit-score")
 let finalScore = document.getElementById("final-score")
 let timer = document.querySelector("h1");
+let highscoreContainer = document.getElementById("highscores");
+let highscoreList = document.getElementById("highscore-list")
+let homeButton = document.getElementById("home-button")
+let clearHighscores = document.getElementById("clear-highscores")
+
 let questionCounter = 0;
 var initialTime = 60;
 
@@ -19,8 +25,9 @@ let revealedAnswer = document.createElement("h3")
 
 let userStorage = {
     initials: "",
-    score: ""
+    score: 0
 }
+
 
 let questions = [
     {
@@ -61,9 +68,7 @@ let questions = [
 // }
 
 let startGame = function () {
-//    countdown();
-
-
+    //    countdown();
     questionTitle.textContent = questions[questionCounter].question;
     option1.textContent = questions[questionCounter].option1;
     option1.setAttribute("value", questions[questionCounter].option1)
@@ -97,6 +102,7 @@ let startGame = function () {
             next()
         }
     })
+    
 };
 
 
@@ -120,6 +126,39 @@ let next = function () {
     }
 }
 
+let clearHighScores = function () {
+    let confirmDelete = window.confirm("Are you sure you would like to erase highscores?");
+
+    if (confirmDelete) {
+        localStorage.clear();
+    } else {
+        window.alert("We did not clear your highscores")
+    }
+}
+
+let highscore = function () {
+    let storedScore = localStorage.getItem("highscore");
+    const formatedStoredScores = JSON.parse(storedScore);
+
+    scoreInput.removeAttribute("class", "main-container")
+    scoreInput.classList.toggle("hide")
+
+    highscoreContainer.setAttribute("class", "main-container");
+    highscoreContainer.classList.toggle("hide");
+
+    if (!formatedStoredScores) {
+        window.alert("there are no highscores")
+    } else if (highscoreList.querySelectorAll("li").length > 0) {
+        return true
+    } else {
+        for (let i = 0; i < formatedStoredScores.length; i++) {
+            let listEl = document.createElement("li");
+            listEl.textContent = (i + 1) + " " + formatedStoredScores[i].initials + " - " + formatedStoredScores[i].score;
+            highscoreList.appendChild(listEl)
+        }
+    }
+};
+
 let endGame = function () {
     mainDiv.remove();
     scoreInput.classList.toggle("hide");
@@ -129,20 +168,34 @@ let endGame = function () {
 
     submitScore.addEventListener("click", function (event) {
         event.preventDefault();
-        userStorage.score = questionCounter;
-        userStorage.initials = userInitial.value;
-        
-        localStorage.setItem("highscore", JSON.stringify(userStorage));
+        let storedScore = localStorage.getItem("highscore");
+        let newScores = [];
+        if (storedScore) {
+            const formatedStoredScores = JSON.parse(storedScore);
+            userStorage.initials = userInitial.value
+            userStorage.score = questionCounter
+            newScores = [...formatedStoredScores, userStorage].sort((a, b) => b.score - a.score);
+        } else {
+            userStorage.initials = userInitial.value
+            userStorage.score = questionCounter
+            newScores = [userStorage];
+        }
+        localStorage.setItem("highscore", JSON.stringify(newScores));
         highscore();
     })
 }
 
-let highscore = function () {
-    scoreInput.removeAttribute("class", "main-container")
-    scoreInput.classList.toggle("hide")
+clearHighscores.addEventListener("click", clearHighScores)
 
-    
-};
+highscoreButton.addEventListener("click", function () {
+    if (landingPage.classList.contains("main-container")) {
+        landingPage.classList.remove("main-container")
+        landingPage.classList.toggle("hide");
+        highscore()
+    } else {
+        highscore();
+    }
+})
 
 beginQuizButton.addEventListener("click", function () {
     landingPage.classList.remove("main-container")
@@ -150,3 +203,11 @@ beginQuizButton.addEventListener("click", function () {
     startGame();
 })
 
+homeButton.addEventListener("click", function () {
+    highscoreContainer.classList.remove("main-container")
+    highscoreContainer.setAttribute("class", "hide")
+
+
+    questionCounter = 0;
+    startGame()
+})
