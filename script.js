@@ -68,6 +68,10 @@ let questions = [
 // }
 
 let startGame = function () {
+    questionCounter = 0;
+    mainDiv.removeEventListener("click", onDivClick);
+    revealedAnswer.textContent = "";
+
     //    countdown();
     questionTitle.textContent = questions[questionCounter].question;
     option1.textContent = questions[questionCounter].option1;
@@ -88,21 +92,29 @@ let startGame = function () {
     mainDiv.setAttribute("class", "main-container")
     body.appendChild(mainDiv);
 
-    mainDiv.addEventListener("click", function (event) {
-        let userInput = event.target.value;
+    mainDiv.addEventListener("click", onDivClick);
+};
+
+let onDivClick = function (event) {
+    let userInput = event.target.value;
         if (userInput === questions[questionCounter].answer) {
             revealedAnswer.textContent = "Right!"
             mainDiv.appendChild(revealedAnswer)
             questionCounter++;
-            next()
+            setTimeout(function () {
+                revealedAnswer.textContent = ""
+                next()
+            }, 1000)
         } else {
             revealedAnswer.textContent = "Wrong!"
             mainDiv.appendChild(revealedAnswer)
             questionCounter++;
-            next()
+            setTimeout(function () {
+                revealedAnswer.textContent = ""
+                next()
+            }, 1000)
         }
-    })
-};
+}
 
 
 let next = function () {
@@ -147,7 +159,7 @@ let highscore = function () {
 
     if (!formatedStoredScores) {
         window.alert("there are no highscores")
-    } else if (highscoreList.querySelectorAll("li").length > 0) {
+    } else if (highscoreList.querySelectorAll("li").length === formatedStoredScores.length) {
         return true
     } else {
         for (let i = 0; i < formatedStoredScores.length; i++) {
@@ -159,30 +171,30 @@ let highscore = function () {
 };
 
 let endGame = function () {
+    submitScore.removeEventListener("click", onSubmitClick);
     mainDiv.remove();
     scoreInput.classList.toggle("hide");
     scoreInput.setAttribute("class", "main-container")
-
     finalScore.textContent = "your final score is " + questionCounter + "!";
+    submitScore.addEventListener("click", onSubmitClick);
+}
 
-    submitScore.addEventListener("click", function (event) {
-        event.preventDefault();
-        let storedScore = localStorage.getItem("highscore");
-        let newScores = [];
-        if (storedScore) {
-            const formatedStoredScores = JSON.parse(storedScore);
-            userStorage.initials = userInitial.value
-            userStorage.score = questionCounter
-            newScores = [...formatedStoredScores, userStorage].sort((a, b) => b.score - a.score);
-        } else {
-            userStorage.initials = userInitial.value
-            userStorage.score = questionCounter
-            newScores = [userStorage];
-        }
-        localStorage.setItem("highscore", JSON.stringify(newScores));
-        highscore();
-    })
- 
+let onSubmitClick = function (event) {
+    event.preventDefault();
+    let storedScore = localStorage.getItem("highscore");
+    let newScores = [];
+    if (storedScore) {
+        const formatedStoredScores = JSON.parse(storedScore);
+        userStorage.initials = userInitial.value
+        userStorage.score = questionCounter
+        newScores = [...formatedStoredScores, userStorage].sort((a, b) => b.score - a.score);
+    } else {
+        userStorage.initials = userInitial.value
+        userStorage.score = questionCounter
+        newScores = [userStorage];
+    }
+    localStorage.setItem("highscore", JSON.stringify(newScores));
+    highscore();
 }
 
 clearHighscores.addEventListener("click", clearHighScores)
