@@ -7,7 +7,7 @@
 [website](https://blitman12.github.io/QuizGame/)
 
 ## Screenshot
-![Screenshot](./screenshot.jpg)
+![Screenshot](screenshot.jpg)
 
 
 ## License
