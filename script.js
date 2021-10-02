@@ -13,7 +13,7 @@ let homeButton = document.getElementById("home-button")
 let clearHighscores = document.getElementById("clear-highscores")
 
 let questionCounter = 0;
-var initialTime = 60;
+let initialTime = 60;
 
 let mainDiv = document.createElement("div");
 let questionTitle = document.createElement("h2");
@@ -56,18 +56,24 @@ let questions = [
     }
 ]
 
-// let countdown = function () {
-//     var timeInterval =  setInterval(function() {
-//         if (initialTime > 0) {
-//             timer.textContent = initialTime;
-//             initialTime--;
-//         } else {
-//             clearInterval(timeInterval)
-//         }
-//     }, 1000)
-// }
+let countdown = function () {
+    console.log("timer started")
+    let timeInterval =  setInterval(function() {
+        if (initialTime > 0 && questionCounter < questions.length) {
+            initialTime--;
+            timer.textContent = initialTime;
+        } else {
+            clearInterval(timeInterval);
+            timer.textContent = "";
+        }
+    }, 1000)
+}
 
 let startGame = function () {
+    initialTime = 60;
+    timer.textContent = initialTime;
+    countdown();
+
     questionCounter = 0;
     mainDiv.removeEventListener("click", onDivClick);
     revealedAnswer.textContent = "";
@@ -99,15 +105,14 @@ let onDivClick = function (event) {
     if (userInput === questions[questionCounter].answer) {
         revealedAnswer.textContent = "Right!"
         mainDiv.appendChild(revealedAnswer)
-        questionCounter++;
         setTimeout(function () {
             revealedAnswer.textContent = ""
             next()
         }, 1000)
     } else {
+        initialTime -= 10;
         revealedAnswer.textContent = "Wrong!"
         mainDiv.appendChild(revealedAnswer)
-        questionCounter++;
         setTimeout(function () {
             revealedAnswer.textContent = ""
             next()
@@ -117,8 +122,8 @@ let onDivClick = function (event) {
 
 
 let next = function () {
-    if (questionCounter >= questions.length) {
-        console.log("The game has ended")
+    questionCounter++;
+    if (questionCounter >= questions.length || initialTime <= 0) {
         endGame()
     } else {
         questionTitle.textContent = questions[questionCounter].question;
@@ -136,8 +141,9 @@ let next = function () {
     }
 }
 
-
 let highscore = function () {
+    timer.textContent = "";
+    highscoreList.innerHTML = "";
     let storedScore = localStorage.getItem("highscore");
     const formatedStoredScores = JSON.parse(storedScore);
 
@@ -150,7 +156,7 @@ let highscore = function () {
     if (!formatedStoredScores) {
         window.alert("there are no highscores")
     } else if (highscoreList.querySelectorAll("li").length > 0) {
-        return true
+        return
     } else {
         for (let i = 0; i < formatedStoredScores.length; i++) {
             let listEl = document.createElement("li");
@@ -160,22 +166,24 @@ let highscore = function () {
     }
 };
 
+
 let clearHighScores = function () {
     let confirmDelete = window.confirm("Are you sure you would like to erase highscores?");
     if (confirmDelete) {
         localStorage.clear();
-
+        highscoreList.innerHTML = "";
     } else {
         window.alert("We did not clear your highscores")
     }
 }
 
 let endGame = function () {
+    timer.textContent = initialTime;
     submitScore.removeEventListener("click", onSubmitClick);
     mainDiv.remove();
     scoreInput.classList.toggle("hide");
     scoreInput.setAttribute("class", "main-container")
-    finalScore.textContent = "your final score is " + questionCounter + "!";
+    finalScore.textContent = "your final score is " + initialTime + "!";
     submitScore.addEventListener("click", onSubmitClick);
 }
 
@@ -186,11 +194,11 @@ let onSubmitClick = function (event) {
     if (storedScore) {
         const formatedStoredScores = JSON.parse(storedScore);
         userStorage.initials = userInitial.value
-        userStorage.score = questionCounter
+        userStorage.score = initialTime
         newScores = [...formatedStoredScores, userStorage].sort((a, b) => b.score - a.score);
     } else {
         userStorage.initials = userInitial.value
-        userStorage.score = questionCounter
+        userStorage.score = initialTime
         newScores = [userStorage];
     }
     localStorage.setItem("highscore", JSON.stringify(newScores));
