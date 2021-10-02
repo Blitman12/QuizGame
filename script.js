@@ -14,6 +14,7 @@ let clearHighscores = document.getElementById("clear-highscores")
 
 let questionCounter = 0;
 let initialTime = 60;
+let timerSwitch = false;
 
 let mainDiv = document.createElement("div");
 let questionTitle = document.createElement("h2");
@@ -57,9 +58,9 @@ let questions = [
 ]
 
 let countdown = function () {
-    console.log("timer started")
+    timerSwitch = true;
     let timeInterval =  setInterval(function() {
-        if (initialTime > 0 && questionCounter < questions.length) {
+        if (initialTime > 0 && questionCounter < questions.length && timerSwitch) {
             initialTime--;
             timer.textContent = initialTime;
         } else {
@@ -160,7 +161,7 @@ let highscore = function () {
     } else {
         for (let i = 0; i < formatedStoredScores.length; i++) {
             let listEl = document.createElement("li");
-            listEl.textContent = (i + 1) + " " + formatedStoredScores[i].initials + " - " + formatedStoredScores[i].score;
+            listEl.textContent = (i + 1) + ": " + formatedStoredScores[i].initials + " - " + formatedStoredScores[i].score;
             highscoreList.appendChild(listEl)
         }
     }
@@ -208,6 +209,7 @@ let onSubmitClick = function (event) {
 clearHighscores.addEventListener("click", clearHighScores)
 
 highscoreButton.addEventListener("click", function () {
+    timerSwitch = false;
     mainDiv.classList.remove("main-container");
     mainDiv.setAttribute("class", "hide");
     if (landingPage.classList.contains("main-container")) {
