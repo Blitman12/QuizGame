@@ -72,7 +72,6 @@ let startGame = function () {
     mainDiv.removeEventListener("click", onDivClick);
     revealedAnswer.textContent = "";
 
-    //    countdown();
     questionTitle.textContent = questions[questionCounter].question;
     option1.textContent = questions[questionCounter].option1;
     option1.setAttribute("value", questions[questionCounter].option1)
@@ -97,23 +96,23 @@ let startGame = function () {
 
 let onDivClick = function (event) {
     let userInput = event.target.value;
-        if (userInput === questions[questionCounter].answer) {
-            revealedAnswer.textContent = "Right!"
-            mainDiv.appendChild(revealedAnswer)
-            questionCounter++;
-            setTimeout(function () {
-                revealedAnswer.textContent = ""
-                next()
-            }, 1000)
-        } else {
-            revealedAnswer.textContent = "Wrong!"
-            mainDiv.appendChild(revealedAnswer)
-            questionCounter++;
-            setTimeout(function () {
-                revealedAnswer.textContent = ""
-                next()
-            }, 1000)
-        }
+    if (userInput === questions[questionCounter].answer) {
+        revealedAnswer.textContent = "Right!"
+        mainDiv.appendChild(revealedAnswer)
+        questionCounter++;
+        setTimeout(function () {
+            revealedAnswer.textContent = ""
+            next()
+        }, 1000)
+    } else {
+        revealedAnswer.textContent = "Wrong!"
+        mainDiv.appendChild(revealedAnswer)
+        questionCounter++;
+        setTimeout(function () {
+            revealedAnswer.textContent = ""
+            next()
+        }, 1000)
+    }
 }
 
 
@@ -137,15 +136,6 @@ let next = function () {
     }
 }
 
-let clearHighScores = function () {
-    let confirmDelete = window.confirm("Are you sure you would like to erase highscores?");
-
-    if (confirmDelete) {
-        localStorage.clear();
-    } else {
-        window.alert("We did not clear your highscores")
-    }
-}
 
 let highscore = function () {
     let storedScore = localStorage.getItem("highscore");
@@ -159,7 +149,7 @@ let highscore = function () {
 
     if (!formatedStoredScores) {
         window.alert("there are no highscores")
-    } else if (highscoreList.querySelectorAll("li").length === formatedStoredScores.length) {
+    } else if (highscoreList.querySelectorAll("li").length > 0) {
         return true
     } else {
         for (let i = 0; i < formatedStoredScores.length; i++) {
@@ -169,6 +159,16 @@ let highscore = function () {
         }
     }
 };
+
+let clearHighScores = function () {
+    let confirmDelete = window.confirm("Are you sure you would like to erase highscores?");
+    if (confirmDelete) {
+        localStorage.clear();
+
+    } else {
+        window.alert("We did not clear your highscores")
+    }
+}
 
 let endGame = function () {
     submitScore.removeEventListener("click", onSubmitClick);
@@ -200,6 +200,8 @@ let onSubmitClick = function (event) {
 clearHighscores.addEventListener("click", clearHighScores)
 
 highscoreButton.addEventListener("click", function () {
+    mainDiv.classList.remove("main-container");
+    mainDiv.setAttribute("class", "hide");
     if (landingPage.classList.contains("main-container")) {
         landingPage.classList.remove("main-container")
         landingPage.classList.toggle("hide");
@@ -216,7 +218,7 @@ beginQuizButton.addEventListener("click", function () {
 })
 
 homeButton.addEventListener("click", function () {
-    highscoreContainer.classList.remove("main-container")
-    highscoreContainer.setAttribute("class", "hide")
+    highscoreContainer.classList.remove("main-container");
+    highscoreContainer.setAttribute("class", "hide");
     startGame()
 })
