@@ -1,3 +1,4 @@
+// all html selectors used
 let body = document.querySelector("body");
 let landingPage = document.querySelector(".main-container")
 let highscoreButton = document.querySelector("button")
@@ -12,10 +13,12 @@ let highscoreList = document.getElementById("highscore-list")
 let homeButton = document.getElementById("home-button")
 let clearHighscores = document.getElementById("clear-highscores")
 
+// timer specific variables
 let questionCounter = 0;
 let initialTime = 60;
 let timerSwitch = false;
 
+// quiz game html elements
 let mainDiv = document.createElement("div");
 let questionTitle = document.createElement("h2");
 let option1 = document.createElement("button");
@@ -24,39 +27,41 @@ let option3 = document.createElement("button");
 let option4 = document.createElement("button");
 let revealedAnswer = document.createElement("h3")
 
+// user Highscore goes here
 let userStorage = {
     initials: "",
     score: 0
 }
 
-
+// quiz game questions
 let questions = [
     {
-        question: "What is my favorite color?",
-        option1: "red",
-        option2: "green",
-        option3: "blue",
-        option4: "yellow",
-        answer: "red"
+        question: "What is a Boolean in Javascript?",
+        option1: "false",
+        option2: "string",
+        option3: "number",
+        option4: "variable",
+        answer: "false"
     },
     {
-        question: "What is my favorite band?",
-        option1: "dance gavin dance",
-        option2: "rise against",
-        option3: "falling in reverse",
-        option4: "a skylit drive",
-        answer: "dance gavin dance"
+        question: "What is used for styling HTML?",
+        option1: "JavaScript",
+        option2: "CSS",
+        option3: "Django",
+        option4: "React",
+        answer: "CSS"
     },
     {
-        question: "What is my favorite food?",
-        option1: "burritos",
-        option2: "flan",
-        option3: "chips and salsa",
-        option4: "steak",
-        answer: "chips and salsa"
+        question: "What is it called when you combine strings?",
+        option1: "combining",
+        option2: "terraforming",
+        option3: "merging",
+        option4: "concatination",
+        answer: "concatination"
     }
 ]
 
+//timer
 let countdown = function () {
     timerSwitch = true;
     let timeInterval =  setInterval(function() {
@@ -70,6 +75,8 @@ let countdown = function () {
     }, 1000)
 }
 
+
+//handles initial start game
 let startGame = function () {
     initialTime = 60;
     timer.textContent = initialTime;
@@ -121,7 +128,7 @@ let onDivClick = function (event) {
     }
 }
 
-
+// handles other questions
 let next = function () {
     questionCounter++;
     if (questionCounter >= questions.length || initialTime <= 0) {
@@ -142,6 +149,7 @@ let next = function () {
     }
 }
 
+//highscore handler
 let highscore = function () {
     timer.textContent = "";
     highscoreList.innerHTML = "";
